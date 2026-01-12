@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: bookshelf-postgres
+    environment:
+      POSTGRES_DB: bookshelf
+      POSTGRES_USER: bookshelf_user
+      POSTGRES_PASSWORD: bookshelf_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - bookshelf-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bookshelf_user -d bookshelf"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    container_name: bookshelf-web
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - bookshelf-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bookshelf
+      SPRING_DATASOURCE_USERNAME: bookshelf_user
+      SPRING_DATASOURCE_PASSWORD: bookshelf_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+
+networks:
+  bookshelf-net:
+
+volumes:
+  pgdata:

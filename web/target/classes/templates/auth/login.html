@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Вхід')"></head>
+<body>
+<div class="container">
+    <div th:replace="fragments/layout :: nav"></div>
+
+    <div class="card" style="max-width:520px;">
+        <h2 style="margin-top:0;">🔐 Вхід</h2>
+        <form th:action="@{/auth/login}" method="post" class="grid">
+            <div>
+                <label>Ім'я користувача</label>
+                <input class="input" name="username" autocomplete="username" placeholder="Введіть логін"/>
+            </div>
+            <div>
+                <label>Пароль</label>
+                <input class="input" type="password" name="password" autocomplete="current-password" placeholder="Введіть пароль"/>
+            </div>
+            <button class="btn" type="submit">Увійти</button>
+            <div class="muted">
+                <span>Немає акаунту?</span>
+                <a th:href="@{/auth/register}">Зареєструватися</a>
+            </div>
+            <div th:if="${param.error}" style="color: var(--danger);">Невірні дані для входу</div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

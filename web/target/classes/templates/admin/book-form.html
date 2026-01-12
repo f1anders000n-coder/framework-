@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Book')"></head>
+<body>
+<div class="container">
+    <div th:replace="fragments/layout :: nav"></div>
+
+    <div class="card" style="max-width:720px;">
+        <h2 style="margin-top:0;"
+            th:text="${book.id} != null ? '✏️ Редагувати книгу' : '📚 Нова книга'">
+            Форма книги
+        </h2>
+
+        <form th:action="${book.id} != null ? @{'/admin/books/' + ${book.id}} : @{/admin/books}"
+              method="post"
+              class="grid">
+            <div>
+                <label>Назва</label>
+                <input class="input" name="title"
+                       th:value="${book.title}"
+                       required placeholder="Введіть назву книги"/>
+            </div>
+
+            <div>
+                <label>Автор</label>
+                <input class="input" name="author"
+                       th:value="${book.author}" placeholder="Введіть автора"/>
+            </div>
+
+            <div>
+                <label>Опис</label>
+                <textarea class="input" name="description"
+                          th:text="${book.description}" placeholder="Додайте опис книги..."></textarea>
+            </div>
+
+            <div class="actions">
+                <button class="btn" type="submit">💾 Зберегти</button>
+                <a class="btn secondary" th:href="@{/}">Скасувати</a>
+            </div>
+        </form>
+
+        <div class="actions" th:if="${book.id} != null" style="margin-top:1em;">
+            <form th:action="@{'/admin/books/' + ${book.id} + '/delete'}"
+                  method="post">
+                <button class="btn danger" type="submit">🗑️ Видалити</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
